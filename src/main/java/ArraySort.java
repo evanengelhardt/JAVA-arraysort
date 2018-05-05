@@ -2,30 +2,41 @@ package main.java;
 import java.io.*;
 import java.util.ArrayList;
 import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 
 public class ArraySort {
     private int[] arrToSort;
     private char sortType;
-    private String filename;
+    private int testFile;
 
 
-    public ArraySort(String filename, char sortType){
-        this.filename = filename;
-        this.sortType = sortType;
-        this.arrToSort = this.getArrayFromFile();
+    public ArraySort(){
+        this.getInfoFromUser();
+        this.getArrayFromFile();
+    }
 
+    private void getInfoFromUser(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Would you like to use test file 1, 2, or 3? (1,2,3)");
+
+        this.testFile = sc.nextInt();
+
+        System.out.println("\nWhat type of sort would you like?\nb for Bubblesort\nq for Quicksort\nm for Mergesort");
+
+        this.sortType = sc.next().charAt(0);
     }
 
     /*
     getArrayFromFile
     converts a text file of space separated integers and converts it into an array
      */
-    private int[] getArrayFromFile(){
+    private void getArrayFromFile(){
         String line;
+        String filename = this.getFileName();
 
         try{
-            FileReader fileReader = new FileReader(this.filename);
+            FileReader fileReader = new FileReader(filename);
 
             // Wrap filereader in bufferedreader to save data
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -49,20 +60,38 @@ public class ArraySort {
                 }
             }
 
-            return arr;
+            this.arrToSort = arr;
 
         } catch (FileNotFoundException ex){
             System.out.println(
                     "Unable to open file '" +
-                            this.filename + "'");
+                            filename + "'");
         }
         catch (IOException ex) {
             System.out.println(
                     "Error reading file '"
-                            + this.filename + "'");
+                            + filename + "'");
+        }
+    }
+
+    private String getFileName(){
+        String filename = "src/main/resources/";
+        switch(testFile) {
+            case 1 :
+                filename += "test.txt";
+                break;
+            case 2 :
+                filename += "test2.txt";
+                break;
+            case 3 :
+                filename += "test3.txt";
+                break;
+            default:
+                System.out.println("Entered incorrect file number, using file 1");
+                filename += "test.txt";
         }
 
-        return null;
+        return filename;
     }
 
     /*
@@ -231,17 +260,12 @@ public class ArraySort {
     }
 
 
+
+
     public static void main(String[] args){
-        String fileName = "src/main/resources/test.txt";
+        ArraySort test = new ArraySort();
+        test.sort();
 
-        ArraySort test1 = new ArraySort(fileName, 'b');
-        test1.sort();
-
-        ArraySort test2 = new ArraySort(fileName, 'q');
-        test2.sort();
-
-        ArraySort test3 = new ArraySort(fileName, 'm');
-        test3.sort();
 
 
 
