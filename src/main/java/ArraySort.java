@@ -1,14 +1,68 @@
 package main.java;
-import java.util.Random;
+import java.io.*;
+import java.util.ArrayList;
+import java.io.FileNotFoundException;
+
 
 public class ArraySort {
     private int[] arrToSort;
     private char sortType;
+    private String filename;
 
 
-    public ArraySort(int[] newArray, char sortType){
-        this.arrToSort = newArray;
+    public ArraySort(String filename, char sortType){
+        this.filename = filename;
         this.sortType = sortType;
+        this.arrToSort = this.getArrayFromFile();
+
+    }
+
+    /*
+    getArrayFromFile
+    converts a text file of space separated integers and converts it into an array
+     */
+    private int[] getArrayFromFile(){
+        String line;
+
+        try{
+            FileReader fileReader = new FileReader(this.filename);
+
+            // Wrap filereader in bufferedreader to save data
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            ArrayList<String[]> strNums = new ArrayList<>();
+            int i = 0;
+            int size = 0;
+
+            while( (line = bufferedReader.readLine()) != null){
+                strNums.add(line.split(" "));
+                size += (line.split(" ")).length;
+            }
+
+            int[] arr = new int[size];
+            int pos = 0;
+
+            for(int j = 0 ; j < strNums.size() ; j++){
+                for(int k = 0 ; k < strNums.get(j).length ; k++){
+                    arr[pos] = Integer.parseInt(strNums.get(j)[k]);
+                    pos++;
+                }
+            }
+
+            return arr;
+
+        } catch (FileNotFoundException ex){
+            System.out.println(
+                    "Unable to open file '" +
+                            this.filename + "'");
+        }
+        catch (IOException ex) {
+            System.out.println(
+                    "Error reading file '"
+                            + this.filename + "'");
+        }
+
+        return null;
     }
 
     /*
@@ -178,28 +232,20 @@ public class ArraySort {
 
 
     public static void main(String[] args){
-        Random rand = new Random();
-        int[] exampleArr = new int[25];
-        // bubblesort
-        for(int i = 0 ; i < exampleArr.length ; i++) {
-            exampleArr[i] = rand.nextInt(1000);
-        }
-        ArraySort test1 = new ArraySort(exampleArr, 'b');
+        String fileName = "src/main/resources/test.txt";
+
+        ArraySort test1 = new ArraySort(fileName, 'b');
         test1.sort();
 
-        // quicksort
-        for(int i = 0 ; i < exampleArr.length ; i++) {
-            exampleArr[i] = rand.nextInt(1000);
-        }
-        ArraySort test2 = new ArraySort(exampleArr, 'q');
+        ArraySort test2 = new ArraySort(fileName, 'q');
         test2.sort();
 
-        // mergesort
-        for(int i = 0 ; i < exampleArr.length ; i++) {
-            exampleArr[i] = rand.nextInt(1000);
-        }
-        ArraySort test3 = new ArraySort(exampleArr, 'm');
+        ArraySort test3 = new ArraySort(fileName, 'm');
         test3.sort();
+
+
+
+
 
     }
 
